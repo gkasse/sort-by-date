@@ -10,6 +10,7 @@ import (
 	"path"
 	"path/filepath"
 	"regexp"
+	"strconv"
 )
 
 var (
@@ -60,6 +61,15 @@ func main() {
 
 		from := path.Join(*readDirectory, file.Name())
 		to := path.Join(containerDir, file.Name())
+
+		for i := 1; true; i++ {
+			if _, err := os.Stat(to); os.IsNotExist(err) {
+				break
+			}
+
+			to = path.Join(containerDir, strconv.Itoa(i) + "_" + file.Name())
+		}
+
 		if *dryRun {
 			fmt.Fprintln(os.Stdout, "Move: " +from+ " -> " +to)
 		} else {
